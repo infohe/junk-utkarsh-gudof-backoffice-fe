@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Button, notification, Spin, Space } from 'antd';
+import { Table, Button, notification, Spin, Space, Modal } from 'antd';
 import { connect } from 'react-redux';
 import { instance as api } from '../../../axios';
 import './ProductList.css';
@@ -11,10 +11,7 @@ class ProductList extends Component {
             templateId: null,
             categoryId: null,
             dataFetching: true,
-            products: {
-                data: [],
-                names: []
-            },
+            products: [],
             columns: []
         }
     }
@@ -32,15 +29,12 @@ class ProductList extends Component {
                 this.setState({templateId: products[0].template})
         } else {
             let { data } = await api.get("/product/")
-            console.log(data)
             products = data
         }
         // For earlier products that didn't have any data
         products = products.filter(prod => prod.data !== "{}")
-        const data = products.map(product => {
-            return JSON.parse(product.data);
-        })
-        const names = products.map(product => {
+
+        const tableProducts = products.map(product => {
             if(product.name === undefined) {
                 // For earlier products that didn't have manuf, model defined.
                 product.name = '--Not defined--'
@@ -62,7 +56,7 @@ class ProductList extends Component {
                 title: 'Name', 
                 dataIndex: 'name', 
                 key: 'name',
-                filters: names.map(prod => ({text: prod.name, value: prod.name}))
+                filters: tableProducts.map(prod => ({text: prod.name, value: prod.name}))
             }, {
                 title: 'Created At',
                 dataIndex: 'created_at',
@@ -115,24 +109,38 @@ class ProductList extends Component {
             fixed: 'right',
             width: 100,
             render: (item) => {
-                return (<Button onClick={async (e) => {
-                    const resp = await api.delete(`/product/${item.category._id}/${item.id}`)
-                    if(resp.status === 204) {
-                        notification['success']({
-                            message: 'Product Deleted',
-                            description: 'This product was deleted from the database.'
-                        })
-                    } else {
-                        notification['error']({
-                            message: 'An Error Occurred',
-                            description: 'There was an error while deleting this product.'
-                        })
-                    }
+                return (<Button onClick={(e) => {
+                    Modal.confirm({
+                        title: 'Confirm Deletion',
+                        content: 'Are you sure you want to delete this product?',
+                        onOk: async () => {
+                            const resp = await api.delete(`/product/${item.category._id}/${item.id}`)
+                            this.setState({dataFetching: true})
+                            if (resp.status === 204) {
+                                const products = this.state.products;
+                                let indexOf = products.findIndex(el => el.id === item.id);
+                                if (indexOf === -1) return ; // This condition would never should arise since the item to be deleted
+                                // will always be there in the array
+                                products.splice(indexOf, 1);
+                                this.setState({products, dataFetching: false});
+                                notification['success']({
+                                    message: 'Product Deleted',
+                                    description: 'This product was deleted from the database.'
+                                })
+                            } else {
+                                notification['error']({
+                                    message: 'An Error Occurred',
+                                    description: 'There was an error while deleting this product.'
+                                })
+                            }
+                        }
+                    })
                 }}>Remove Product</Button>
                 )
             }
         })
-        this.setState({products: {data, names}, columns, dataFetching: false})
+        console.log(tableProducts);
+        this.setState({products: tableProducts, columns, dataFetching: false})
     } catch (e) {
         console.log(e);
         notification['error']({
@@ -147,7 +155,7 @@ class ProductList extends Component {
         <div className="container main-container">
             <h3>{this.state.templateId ? 'Listing Products based on Template' : 'Listing all Products'}</h3>
         <div style={{ display: 'flex' }}>
-                    {!this.state.dataFetching ? <Table dataSource={this.state.products.names} columns={this.state.columns} /> : <Space size="middle"><Spin /></Space>}
+                    {!this.state.dataFetching ? <Table dataSource={this.state.products} columns={this.state.columns} /> : <Space size="middle"><Spin /></Space>}
         </div>
         {this.state.categoryId && this.state.templateId ? (
             <Button

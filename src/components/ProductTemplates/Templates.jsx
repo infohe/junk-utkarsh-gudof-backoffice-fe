@@ -138,5 +138,3 @@ export default connect(({ activeNodeKey, settings }) => ({
         payload: {},
       }),
 }))(NewTemplate);
-
-// export default NewTemplate;
