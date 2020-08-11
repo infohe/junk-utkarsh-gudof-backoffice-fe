@@ -71,7 +71,7 @@ class NewTemplate extends Component {
                         >
                             <FormView />
                         </Card>
-                        {/* {(settings.subViews || []).map((a) => {
+                        {(settings.subViews || []).map((a) => {
                             const style = { margin: '12px 8px', width: 400, display: 'inline-block', verticalAlign: 'top' };
                             switch (a) {
                               case "schema":
@@ -97,7 +97,7 @@ class NewTemplate extends Component {
                               default:
                                 return <div key="null" />;
                             }
-                        })} */}
+                        })}
                     </Content>
                 </Layout>
               <Sider
