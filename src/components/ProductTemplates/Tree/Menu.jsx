@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Menu } from 'antd';
+import { Menu, Modal, Input } from 'antd';
 const { SubMenu, Item } = Menu;
 
 function nameGen(name, occupied) {
@@ -14,15 +14,32 @@ function nameGen(name, occupied) {
 }
 
 class AddItemMenu extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      name: null,
+      modalVisibility: false,
+      item: null
+    }
+  }
   onAddNode = (node2add) => {
     const { addNode } = this.props;
     const name = nameGen(
-      node2add.name,
+      this.state.name ? this.state.name : node2add.name,
       this.props.node.children.map((a) => a.name)
     );
-    console.log(node2add)
     addNode({ ...node2add, name });
   };
+
+  addFieldName = () => {
+    this.onAddNode(this.state.item);
+    this.setState({modalVisibility: false, item: null, name: null})
+  };
+
+  showModal = (b) => {
+    this.setState({ modalVisibility: true, item: b });
+  }
+
   render() {
     const {
       menu: { children: menuTree },
@@ -37,7 +54,13 @@ class AddItemMenu extends React.Component {
           a.schema && a.schema.type === 'object' && a.children && a.children.length ? (
             <SubMenu key={a.key} title={a.schema.title || a.name}>
               {a.children.map((b) => (
-                <Item key={b.key} onClick={() => this.onAddNode(b)}>
+                <Item key={b.key} onClick={() => {
+                  if (b.name === "list") {
+                    this.showModal(b);
+                  } else {
+                    this.onAddNode(b)
+                  }
+                }}>
                   {b.schema.title || b.name}
                 </Item>
               ))}
@@ -48,6 +71,15 @@ class AddItemMenu extends React.Component {
             </Item>
           )
         )}
+        <Modal
+          title="List Field Name"
+          content="Enter name of List Field"
+          onOk={(this.addFieldName)}
+          visible={this.state.modalVisibility}
+          destroyOnClose
+        >
+          <Input onChange={(e) => this.setState({name: e.target.value})}/>
+        </Modal>
       </Menu>
     );
   }
