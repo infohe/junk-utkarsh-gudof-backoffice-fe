@@ -112,7 +112,7 @@ export function fieldTemplateConnector(FieldTemplate) {
     );
     return (
       <div className={classNames} style={active ? ACTIVE_STYLE : null}>
-        {['object', 'array'].includes(schema.type) ? null : (
+        {['object'].includes(schema.type) ? null : (
           <div className="pull-right">
             {' '}
             <ButtonGroup id={id} />{' '}

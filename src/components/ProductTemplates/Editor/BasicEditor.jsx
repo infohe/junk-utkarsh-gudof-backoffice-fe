@@ -271,6 +271,7 @@ const widgetMap = {
     select: 'SelectWidget',
     checkboxes: 'CheckboxesWidget',
     files: 'FileWidget',
+    list: 'TextWidget'
   },
 };
 

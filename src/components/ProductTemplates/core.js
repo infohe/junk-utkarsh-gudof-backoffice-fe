@@ -398,7 +398,6 @@ function _addNodeByPath(tree, [head, ...tail], position, node2Add, arrayItemsFla
     } else {
       arrayItemsFlag = 0;
     }
-    console.log(arrayItemsFlag);
     const newChildren = _addNodeByPath(node.children, tail, position, node2Add, arrayItemsFlag);
     if (newChildren === node.children) {
       // no change
