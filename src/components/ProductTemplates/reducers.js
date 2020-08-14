@@ -34,6 +34,7 @@ function tree(state = emptyTree, action) {
     }
     case 'TREE_ADD_NODE': {
       const { targetNodeKey, position, node2add } = action.payload;
+      console.log(node2add);
       return addNode(state, targetNodeKey, position, node2add);
     }
     case 'TREE_REMOVE_NODE':

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Menu, Modal, Input } from 'antd';
+import { Menu, Modal, Input, Select } from 'antd';
+const { Option } = Select;
 const { SubMenu, Item } = Menu;
 
 function nameGen(name, occupied) {
@@ -18,6 +19,7 @@ class AddItemMenu extends React.Component {
     super(props);
     this.state = {
       name: null,
+      type: null,
       modalVisibility: false,
       item: null
     }
@@ -28,6 +30,8 @@ class AddItemMenu extends React.Component {
       this.state.name ? this.state.name : node2add.name,
       this.props.node.children.map((a) => a.name)
     );
+    node2add.schema.items.type = this.state.type;
+    console.log(node2add);
     addNode({ ...node2add, name });
   };
 
@@ -78,7 +82,17 @@ class AddItemMenu extends React.Component {
           visible={this.state.modalVisibility}
           destroyOnClose
         >
-          <Input onChange={(e) => this.setState({name: e.target.value})}/>
+          <p>List Name: </p>
+          <Input placeholder="Enter name of list" onChange={(e) => this.setState({name: e.target.value})}/>
+          <p>Element Type: </p>
+          <Select
+            placeholder="Select type of list"
+            onChange={(val) => this.setState({type: val})}
+          >
+            <Option value="string">Text</Option>
+            <Option value="object">Object</Option>
+            <Option value="number">Number</Option>
+          </Select>
         </Modal>
       </Menu>
     );
