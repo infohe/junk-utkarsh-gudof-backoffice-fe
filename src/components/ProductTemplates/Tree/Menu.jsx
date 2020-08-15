@@ -20,6 +20,7 @@ class AddItemMenu extends React.Component {
     this.state = {
       name: null,
       type: null,
+      customList: false,
       modalVisibility: false,
       item: null
     }
@@ -30,8 +31,10 @@ class AddItemMenu extends React.Component {
       this.state.name ? this.state.name : node2add.name,
       this.props.node.children.map((a) => a.name)
     );
-    // node2add.schema.items.type = this.state.type;
-    // console.log(node2add);
+    if(this.state.type) {
+      node2add.schema.items.type = this.state.type;
+      this.setState({type: null, name: null, customList: false})
+    }
     addNode({ ...node2add, name });
   };
 
@@ -40,7 +43,10 @@ class AddItemMenu extends React.Component {
     this.setState({modalVisibility: false, item: null, name: null})
   };
 
-  showModal = (b) => {
+  showModal = (b, listType) => {
+    if(listType === 'customlist') {
+      this.setState({customList: true})
+    }
     this.setState({ modalVisibility: true, item: b });
   }
 
@@ -60,7 +66,7 @@ class AddItemMenu extends React.Component {
               {a.children.map((b) => (
                 <Item key={b.key} onClick={() => {
                   if (b.name === "list" || b.name==="customlist") {
-                    this.showModal(b);
+                    this.showModal(b, b.name);
                   } else {
                     this.onAddNode(b)
                   }
@@ -84,7 +90,7 @@ class AddItemMenu extends React.Component {
         >
           <p>List Name: </p>
           <Input placeholder="Enter name of list" onChange={(e) => this.setState({name: e.target.value})}/>
-          <p>Element Type: </p>
+          {this.state.customList ? null : (<><p>Element Type: </p>
           <Select
             placeholder="Select type of list"
             onChange={(val) => this.setState({type: val})}
@@ -92,7 +98,7 @@ class AddItemMenu extends React.Component {
             <Option value="string">Text</Option>
             {/* <Option value="object">Object</Option> */}
             <Option value="number">Number</Option>
-          </Select>
+          </Select></>)}
         </Modal>
       </Menu>
     );
