@@ -30,8 +30,8 @@ class AddItemMenu extends React.Component {
       this.state.name ? this.state.name : node2add.name,
       this.props.node.children.map((a) => a.name)
     );
-    node2add.schema.items.type = this.state.type;
-    console.log(node2add);
+    // node2add.schema.items.type = this.state.type;
+    // console.log(node2add);
     addNode({ ...node2add, name });
   };
 
@@ -59,7 +59,7 @@ class AddItemMenu extends React.Component {
             <SubMenu key={a.key} title={a.schema.title || a.name}>
               {a.children.map((b) => (
                 <Item key={b.key} onClick={() => {
-                  if (b.name === "list") {
+                  if (b.name === "list" || b.name==="customlist") {
                     this.showModal(b);
                   } else {
                     this.onAddNode(b)
@@ -90,7 +90,7 @@ class AddItemMenu extends React.Component {
             onChange={(val) => this.setState({type: val})}
           >
             <Option value="string">Text</Option>
-            <Option value="object">Object</Option>
+            {/* <Option value="object">Object</Option> */}
             <Option value="number">Number</Option>
           </Select>
         </Modal>

@@ -22,6 +22,13 @@ const basic = {
           type: 'string'
         }
       },
+      customlist: {
+        type: 'array',
+        title: 'Custom List',
+        items: {
+          type: 'object'
+        }
+      },
       dropdown: {
         type: 'string',
         title: 'Dropdown',
