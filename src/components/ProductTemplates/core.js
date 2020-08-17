@@ -138,7 +138,6 @@ function updateNodeParentKeyAndName(node, parentKey, name) {
   }
   const newKey = parentKey ? parentKey + '.' + name : name;
   if (node.key === newKey) return node;
-  node.schema.title = name[0].toUpperCase() + name.slice(1, name.length);
   return Object.assign(
     {},
     node,

@@ -50,6 +50,10 @@ class AddItemMenu extends React.Component {
     this.setState({ modalVisibility: true, item: b });
   }
 
+  cancelModal = () => {
+    this.setState({ modalVisibility: false, item: null });
+  }
+
   render() {
     const {
       menu: { children: menuTree },
@@ -85,17 +89,19 @@ class AddItemMenu extends React.Component {
           title="List Field Name"
           content="Enter name of List Field"
           onOk={(this.addFieldName)}
+          onCancel={this.cancelModal}
           visible={this.state.modalVisibility}
           destroyOnClose
         >
-          <p>List Name: </p>
-          <Input placeholder="Enter name of list" onChange={(e) => this.setState({name: e.target.value})}/>
+          {/* <p>List Name: </p> */}
+          {/* <Input placeholder="Enter name of list" onChange={(e) => this.setState({name: e.target.value})}/> */}
           {this.state.customList ? null : (<><p>Element Type: </p>
           <Select
             placeholder="Select type of list"
             onChange={(val) => this.setState({type: val})}
           >
             <Option value="string">Text</Option>
+            <Option value="">Dropdown</Option>
             {/* <Option value="object">Object</Option> */}
             <Option value="number">Number</Option>
           </Select></>)}

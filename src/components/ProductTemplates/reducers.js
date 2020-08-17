@@ -169,6 +169,7 @@ export default function (state, action) {
       break;
     }
     case 'ACTIVE_NODE_KEY_SET_BY_RJSF_ID': {
+      console.log(state.tree.present, action.payload);
       const target = getNodeByRjsfId(state.tree.present, action.payload);
       if (!target) return state;
       action = {
