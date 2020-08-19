@@ -627,12 +627,58 @@ function updateNode(tree, targetKey, nodeUpdate) {
 
 var SEPERATOR = '_';
 function getNodeByRjsfId(tree, rjsfId) {
+  // console.log(tree, rjsfId);
+  if (tree === undefined) {
+    return null;
+  }
   for (const node of tree) {
     if (node && node.name === rjsfId) {
       return node;
     }
     if (rjsfId.startsWith(node.name) && rjsfId[node.name.length] === SEPERATOR) {
       if (node.schema.type === 'array') {
+        rjsfId = rjsfId.slice(node.name.length + 1);
+        const i = rjsfId.indexOf(SEPERATOR);
+        const index = i > 0 ? rjsfId.slice(0, i) : rjsfId;
+        if (isNaN(index)) return null;
+        const rest = i > 0 ? rjsfId.slice(i + 1) : null;
+        if (Array.isArray(node.schema.items)) {
+          if (+index < node.schema.items.length) {
+            let n = node.children.find((a) => a.name === '[items]');
+            n = n && n.children.find((a) => a.name === index);
+            return rest ? n && getNodeByRjsfId(n.children, rjsfId.slice(i + 1)) : n;
+          } else {
+            let n = node.children.find((a) => a.name === 'additionalItems');
+            return rest ? n && getNodeByRjsfId(n.children, rest) : n;
+          }
+        } else {
+          let n = node.children.find((a) => a.name === 'items');
+          return rest ? n && getNodeByRjsfId(n.children, rjsfId.slice(i + 1)) : n;
+        }
+      }
+
+      if (node.children) {
+        rjsfId = rjsfId.slice(node.name.length + 1);
+        const n = getNodeByRjsfId(node.children, rjsfId);
+        if (n) return n;
+      }
+    }
+  }
+  return null;
+}
+
+function getNodeByRjsfIdToDelete(tree, rjsfId) {
+  // console.log(tree, rjsfId);
+  if (tree === undefined) {
+    return null;
+  }
+  for (const node of tree) {
+    if (node && node.name === rjsfId) {
+      return node;
+    }
+    if (rjsfId.startsWith(node.name) && rjsfId[node.name.length] === SEPERATOR) {
+      if (node.schema.type === 'array') {
+        return node;
         rjsfId = rjsfId.slice(node.name.length + 1);
         const i = rjsfId.indexOf(SEPERATOR);
         const index = i > 0 ? rjsfId.slice(0, i) : rjsfId;
@@ -676,6 +722,7 @@ export {
   updateNode,
   schema2node,
   getNodeByRjsfId,
+  getNodeByRjsfIdToDelete
 };
 
 export default {
@@ -692,4 +739,5 @@ export default {
   updateNode,
   schema2node,
   getNodeByRjsfId,
+  getNodeByRjsfIdToDelete
 };

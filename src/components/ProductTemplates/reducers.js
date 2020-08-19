@@ -1,4 +1,4 @@
-import { schema2tree, schema2node, removeNode, addNode, moveNode, updateNode, getNodeByRjsfId } from './core';
+import { schema2tree, schema2node, removeNode, addNode, moveNode, updateNode, getNodeByRjsfId, getNodeByRjsfIdToDelete } from './core';
 import defaultSettings from './default/settings';
 import defaultMenuSchema from './default/menu';
 import defaultOptions from './default/options';
@@ -34,7 +34,7 @@ function tree(state = emptyTree, action) {
     }
     case 'TREE_ADD_NODE': {
       const { targetNodeKey, position, node2add } = action.payload;
-      console.log(node2add);
+      // console.log(node2add);
       return addNode(state, targetNodeKey, position, node2add);
     }
     case 'TREE_REMOVE_NODE':
@@ -160,7 +160,8 @@ var reducer = combineReducers({
 export default function (state, action) {
   switch (action.type) {
     case 'TREE_REMOVE_NODE_BY_RJSF_ID': {
-      const target = getNodeByRjsfId(state.tree.present, action.payload);
+      console.log(action.payload);
+      const target = getNodeByRjsfIdToDelete(state.tree.present, action.payload);
       if (!target) return state;
       action = {
         type: 'TREE_REMOVE_NODE',
@@ -169,7 +170,6 @@ export default function (state, action) {
       break;
     }
     case 'ACTIVE_NODE_KEY_SET_BY_RJSF_ID': {
-      console.log(state.tree.present, action.payload);
       const target = getNodeByRjsfId(state.tree.present, action.payload);
       if (!target) return state;
       action = {

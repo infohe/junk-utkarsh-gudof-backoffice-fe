@@ -45,9 +45,12 @@ class AddItemMenu extends React.Component {
 
   showModal = (b, listType) => {
     if(listType === 'customlist') {
-      this.setState({customList: true})
+      this.setState({ customList: true, item: b })
+      this.onAddNode(b);
+    } else {
+      this.setState({ customList: false })
+      this.setState({ modalVisibility: true, item: b });
     }
-    this.setState({ modalVisibility: true, item: b });
   }
 
   cancelModal = () => {
@@ -101,7 +104,7 @@ class AddItemMenu extends React.Component {
             onChange={(val) => this.setState({type: val})}
           >
             <Option value="string">Text</Option>
-            <Option value="">Dropdown</Option>
+            {/* <Option value="">Dropdown</Option> */}
             {/* <Option value="object">Object</Option> */}
             <Option value="number">Number</Option>
           </Select></>)}
