@@ -676,8 +676,10 @@ function getNodeByRjsfIdToDelete(tree, rjsfId) {
     if (node && node.name === rjsfId) {
       return node;
     }
+    console.log(node)
     if (rjsfId.startsWith(node.name) && rjsfId[node.name.length] === SEPERATOR) {
       if (node.schema.type === 'array') {
+        console.log('returning node');
         return node;
         rjsfId = rjsfId.slice(node.name.length + 1);
         const i = rjsfId.indexOf(SEPERATOR);
@@ -701,7 +703,7 @@ function getNodeByRjsfIdToDelete(tree, rjsfId) {
 
       if (node.children) {
         rjsfId = rjsfId.slice(node.name.length + 1);
-        const n = getNodeByRjsfId(node.children, rjsfId);
+        const n = getNodeByRjsfIdToDelete(node.children, rjsfId);
         if (n) return n;
       }
     }
