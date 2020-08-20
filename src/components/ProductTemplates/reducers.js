@@ -162,6 +162,7 @@ export default function (state, action) {
     case 'TREE_REMOVE_NODE_BY_RJSF_ID': {
       console.log(action.payload);
       const target = getNodeByRjsfIdToDelete(state.tree.present, action.payload);
+      console.log(target);
       if (!target) return state;
       action = {
         type: 'TREE_REMOVE_NODE',

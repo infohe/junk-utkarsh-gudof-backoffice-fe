@@ -676,11 +676,9 @@ function getNodeByRjsfIdToDelete(tree, rjsfId) {
     if (node && node.name === rjsfId) {
       return node;
     }
-    console.log(node)
     if (rjsfId.startsWith(node.name) && rjsfId[node.name.length] === SEPERATOR) {
       if (node.schema.type === 'array') {
         console.log('returning node');
-        return node;
         rjsfId = rjsfId.slice(node.name.length + 1);
         const i = rjsfId.indexOf(SEPERATOR);
         const index = i > 0 ? rjsfId.slice(0, i) : rjsfId;
@@ -690,14 +688,21 @@ function getNodeByRjsfIdToDelete(tree, rjsfId) {
           if (+index < node.schema.items.length) {
             let n = node.children.find((a) => a.name === '[items]');
             n = n && n.children.find((a) => a.name === index);
-            return rest ? n && getNodeByRjsfId(n.children, rjsfId.slice(i + 1)) : n;
+            return rest ? n && getNodeByRjsfIdToDelete(n.children, rjsfId.slice(i + 1)) : n;
           } else {
             let n = node.children.find((a) => a.name === 'additionalItems');
-            return rest ? n && getNodeByRjsfId(n.children, rest) : n;
+            return rest ? n && getNodeByRjsfIdToDelete(n.children, rest) : n;
           }
         } else {
           let n = node.children.find((a) => a.name === 'items');
-          return rest ? n && getNodeByRjsfId(n.children, rjsfId.slice(i + 1)) : n;
+          console.log(n);
+          return notification['error']({
+            message: 'Cannot delete text field type!',
+            description: `You cannot delete the type of field. 
+            Do you want to delete just this input instead?
+            Use the 'X' arrow key to delete.`
+          })
+          return rest ? n && getNodeByRjsfIdToDelete(n.children, rjsfId.slice(i + 1)) : n;
         }
       }
 
