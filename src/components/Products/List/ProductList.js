@@ -47,10 +47,12 @@ class ProductList extends Component {
                 updated_at: updates.length > 0 ? updates.slice(updates.length-1)[0].updated_at : '-',
                 template: product.template,
                 category: product.category,
+                categoryName: product.category.name, 
                 id: product._id,
                 key: product._id
             };
         })
+        const categories = tableProducts.map(prod => prod.category.name);
         const columns = [
             {
                 title: 'Name', 
@@ -68,6 +70,13 @@ class ProductList extends Component {
                 dataIndex: 'updated_at',
                 key: 'updated_at',
                 sorter: (a, b) => new Date(a.updated_at) - new Date(b.updated_at),
+            },
+            {
+                title: 'Category',
+                dataIndex: 'categoryName',
+                key: 'categoryName',
+                filters: [...new Set(categories)].map(cat => ({ text: cat, value: cat })),
+                onFilter: (value, record) => record.categoryName.includes(value)
             }
         ]
         columns.push({
@@ -139,7 +148,6 @@ class ProductList extends Component {
                 )
             }
         })
-        console.log(tableProducts);
         this.setState({products: tableProducts, columns, dataFetching: false})
     } catch (e) {
         console.log(e);
