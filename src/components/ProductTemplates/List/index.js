@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, notification, Modal, Skeleton } from 'antd';
+import { Table, Button, notification, Skeleton } from 'antd';
 
 import { instance as api } from '../../../axios';
 import './list.css';

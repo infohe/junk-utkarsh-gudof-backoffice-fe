@@ -138,7 +138,6 @@ function updateNodeParentKeyAndName(node, parentKey, name) {
   }
   const newKey = parentKey ? parentKey + '.' + name : name;
   if (node.key === newKey) return node;
-  node.schema.title = name[0].toUpperCase() + name.slice(1, name.length);
   return Object.assign(
     {},
     node,
@@ -398,7 +397,6 @@ function _addNodeByPath(tree, [head, ...tail], position, node2Add, arrayItemsFla
     } else {
       arrayItemsFlag = 0;
     }
-    console.log(arrayItemsFlag);
     const newChildren = _addNodeByPath(node.children, tail, position, node2Add, arrayItemsFlag);
     if (newChildren === node.children) {
       // no change
@@ -629,6 +627,10 @@ function updateNode(tree, targetKey, nodeUpdate) {
 
 var SEPERATOR = '_';
 function getNodeByRjsfId(tree, rjsfId) {
+  // console.log(tree, rjsfId);
+  if (tree === undefined) {
+    return null;
+  }
   for (const node of tree) {
     if (node && node.name === rjsfId) {
       return node;
@@ -665,6 +667,55 @@ function getNodeByRjsfId(tree, rjsfId) {
   return null;
 }
 
+function getNodeByRjsfIdToDelete(tree, rjsfId) {
+  // console.log(tree, rjsfId);
+  if (tree === undefined) {
+    return null;
+  }
+  for (const node of tree) {
+    if (node && node.name === rjsfId) {
+      return node;
+    }
+    if (rjsfId.startsWith(node.name) && rjsfId[node.name.length] === SEPERATOR) {
+      if (node.schema.type === 'array') {
+        console.log('returning node');
+        rjsfId = rjsfId.slice(node.name.length + 1);
+        const i = rjsfId.indexOf(SEPERATOR);
+        const index = i > 0 ? rjsfId.slice(0, i) : rjsfId;
+        if (isNaN(index)) return null;
+        const rest = i > 0 ? rjsfId.slice(i + 1) : null;
+        if (Array.isArray(node.schema.items)) {
+          if (+index < node.schema.items.length) {
+            let n = node.children.find((a) => a.name === '[items]');
+            n = n && n.children.find((a) => a.name === index);
+            return rest ? n && getNodeByRjsfIdToDelete(n.children, rjsfId.slice(i + 1)) : n;
+          } else {
+            let n = node.children.find((a) => a.name === 'additionalItems');
+            return rest ? n && getNodeByRjsfIdToDelete(n.children, rest) : n;
+          }
+        } else {
+          let n = node.children.find((a) => a.name === 'items');
+          console.log(n);
+          return notification['error']({
+            message: 'Cannot delete text field type!',
+            description: `You cannot delete the type of field. 
+            Do you want to delete just this input instead?
+            Use the 'X' arrow key to delete.`
+          })
+          return rest ? n && getNodeByRjsfIdToDelete(n.children, rjsfId.slice(i + 1)) : n;
+        }
+      }
+
+      if (node.children) {
+        rjsfId = rjsfId.slice(node.name.length + 1);
+        const n = getNodeByRjsfIdToDelete(node.children, rjsfId);
+        if (n) return n;
+      }
+    }
+  }
+  return null;
+}
+
 export {
   schema2tree,
   removeNodeByPath,
@@ -678,6 +729,7 @@ export {
   updateNode,
   schema2node,
   getNodeByRjsfId,
+  getNodeByRjsfIdToDelete
 };
 
 export default {
@@ -694,4 +746,5 @@ export default {
   updateNode,
   schema2node,
   getNodeByRjsfId,
+  getNodeByRjsfIdToDelete
 };

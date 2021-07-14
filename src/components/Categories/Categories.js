@@ -97,7 +97,7 @@ class Categories extends Component {
               description:
                 'The new category has been added to the database!',
             });
-            return true;
+            return resp.data;
           } else {
             return false;
           }
@@ -139,6 +139,7 @@ class Categories extends Component {
           description: 'The new category was not added to the database!',
         });
       }
+      newNode._id = savedToBackend.id;
       if(node === null) {
         this.setState(state => ({
           categories: state.categories.concat(newNode),
@@ -156,7 +157,6 @@ class Categories extends Component {
         }));
       }
       // After addition of the new node, the newCategory variable in state needs to be updated.
-      // BUG: This code is not working. newCategory is not updated.
       newCategory.ModalVisiblity = false;
       newCategory.node = null;
       newCategory.path = null;

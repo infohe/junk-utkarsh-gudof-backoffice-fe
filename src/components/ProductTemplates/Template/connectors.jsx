@@ -64,11 +64,12 @@ export function fieldTemplateConnector(FieldTemplate) {
       return { tree: present, active, isInlineMode };
     },
     (dispatch, { id, schema, uiSchema }) => ({
-      updateTitle: (title) =>
+      updateTitle: (title) => {
         dispatch({
           type: 'TREE_UPDATE_NODE_BY_RJSF_ID',
           payload: { rjsfId: id, nodeUpdate: { schema: { ...schema, title } } },
-        }),
+        })
+      },
       updateDescription: (description) =>
         dispatch({
           type: 'TREE_UPDATE_NODE_BY_RJSF_ID',
@@ -112,7 +113,7 @@ export function fieldTemplateConnector(FieldTemplate) {
     );
     return (
       <div className={classNames} style={active ? ACTIVE_STYLE : null}>
-        {['object', 'array'].includes(schema.type) ? null : (
+        {['object'].includes(schema.type) ? null : (
           <div className="pull-right">
             {' '}
             <ButtonGroup id={id} />{' '}
