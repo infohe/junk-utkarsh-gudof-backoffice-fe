@@ -11,6 +11,7 @@ import CampaingForm from '../CampaingForm/CampaingForm';
 import CategoryForm from '../CategoryForm/CategoryForm';
 import StaffMemberForm from '../StaffMemberForm/StaffMemberForm';
 import Sidebar from '../Layout/Sidebar/Sidebar';
+import EditTemplateForm from '../Template/EditTemplate'
 
 /** Components Name Constants */
 const DRAWER_COMPONENTS = {
@@ -20,6 +21,7 @@ const DRAWER_COMPONENTS = {
   CATEGORY_FORM: CategoryForm,
   STAFF_MEMBER_FORM: StaffMemberForm,
   SIDEBAR: Sidebar,
+  EDIT_TEMPLATE:EditTemplateForm
 };
 
 const CloseButton = styled('button', ({ $theme }) => ({
