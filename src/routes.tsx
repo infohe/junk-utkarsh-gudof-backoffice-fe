@@ -5,30 +5,26 @@ import {
   PRODUCTS,
   CATEGORY,
   DASHBOARD,
-  ORDERS,
   SETTINGS,
-  CUSTOMERS,
-  COUPONS,
   STAFF_MEMBERS,
   SITE_SETTINGS,
+  TEMPLATE
 } from 'settings/constants';
 import AuthProvider, { AuthContext } from 'context/auth';
 import { InLineLoader } from 'components/InlineLoader/InlineLoader';
+import EditTemplate from 'containers/Template/EditTemplate';
 const Products = lazy(() => import('containers/Products/Products'));
+const Template = lazy(() => import('containers/Template/Template'))
 const AdminLayout = lazy(() => import('containers/Layout/Layout'));
 const Dashboard = lazy(() => import('containers/Dashboard/Dashboard'));
 const Category = lazy(() => import('containers/Category/Category'));
-const Orders = lazy(() => import('containers/Orders/Orders'));
 const Settings = lazy(() => import('containers/Settings/Settings'));
 const SiteSettingForm = lazy(() =>
   import('containers/SiteSettingForm/SiteSettingForm')
 );
 const StaffMembers = lazy(() => import('containers/StaffMembers/StaffMembers'));
-const Customers = lazy(() => import('containers/Customers/Customers'));
-const Coupons = lazy(() => import('containers/Coupons/Coupons'));
 const Login = lazy(() => import('containers/Login/Login'));
 const NotFound = lazy(() => import('containers/NotFound/NotFound'));
-
 /**
  *
  *  A wrapper for <Route> that redirects to the login
@@ -63,6 +59,9 @@ const Routes = () => {
     <AuthProvider>
       <Suspense fallback={<InLineLoader />}>
         <Switch>
+          <Route exact={true} path='/editTemplate'>
+            <EditTemplate />
+          </Route>
           <PrivateRoute exact={true} path={DASHBOARD}>
             <AdminLayout>
               <Suspense fallback={<InLineLoader />}>
@@ -84,24 +83,10 @@ const Routes = () => {
               </Suspense>
             </AdminLayout>
           </PrivateRoute>
-          <PrivateRoute path={ORDERS}>
+          <PrivateRoute path={TEMPLATE}>
             <AdminLayout>
               <Suspense fallback={<InLineLoader />}>
-                <Orders />
-              </Suspense>
-            </AdminLayout>
-          </PrivateRoute>
-          <PrivateRoute path={CUSTOMERS}>
-            <AdminLayout>
-              <Suspense fallback={<InLineLoader />}>
-                <Customers />
-              </Suspense>
-            </AdminLayout>
-          </PrivateRoute>
-          <PrivateRoute path={COUPONS}>
-            <AdminLayout>
-              <Suspense fallback={<InLineLoader />}>
-                <Coupons />
+                <Template />
               </Suspense>
             </AdminLayout>
           </PrivateRoute>

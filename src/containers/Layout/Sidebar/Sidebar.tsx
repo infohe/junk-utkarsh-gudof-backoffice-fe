@@ -11,22 +11,17 @@ import {
   DASHBOARD,
   PRODUCTS,
   CATEGORY,
-  ORDERS,
-  CUSTOMERS,
-  COUPONS,
   SETTINGS,
+  TEMPLATE
 } from 'settings/constants';
 import { AuthContext } from 'context/auth';
 
 import { DashboardIcon } from 'assets/icons/DashboardIcon';
 import { ProductIcon } from 'assets/icons/ProductIcon';
 import { SidebarCategoryIcon } from 'assets/icons/SidebarCategoryIcon';
-import { OrderIcon } from 'assets/icons/OrderIcon';
-import { CustomerIcon } from 'assets/icons/CustomerIcon';
-import { CouponIcon } from 'assets/icons/CouponIcon';
 import { SettingIcon } from 'assets/icons/SettingIcon';
 import { LogoutIcon } from 'assets/icons/LogoutIcon';
-
+import { HiTemplate } from "react-icons/hi";
 
 const sidebarMenus = [
   {
@@ -48,22 +43,10 @@ const sidebarMenus = [
     icon: <SidebarCategoryIcon />,
   },
   {
-    name: 'Orders',
-    path: ORDERS,
+    name: 'Template',
+    path: TEMPLATE,
     exact: false,
-    icon: <OrderIcon />,
-  },
-  {
-    name: 'Customers',
-    path: CUSTOMERS,
-    exact: false,
-    icon: <CustomerIcon />,
-  },
-  {
-    name: 'Coupons',
-    path: COUPONS,
-    exact: false,
-    icon: <CouponIcon />,
+    icon: <HiTemplate />
   },
   {
     name: 'Settings',
