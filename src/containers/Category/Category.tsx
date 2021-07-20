@@ -20,15 +20,16 @@ import * as icons from 'assets/icons/category-icons';
 import NoResult from 'components/NoResult/NoResult';
 
 const GET_CATEGORIES = gql`
-  query getCategories($type: String, $searchBy: String) {
-    categories(type: $type, searchBy: $searchBy) {
-      id
-      icon
-      name
-      slug
-      type
-    }
+query{
+  allCategory{
+    _id
+    image,
+    name,
+    products,
+    updatedAt
   }
+}
+
 `;
 
 const Col = withStyle(Column, () => ({
@@ -66,6 +67,7 @@ export default function Category() {
   );
 
   const { data, error, refetch } = useQuery(GET_CATEGORIES);
+  console.log(data)
   if (error) {
     return <div>Error! {error.message}</div>;
   }
@@ -136,7 +138,7 @@ export default function Category() {
                     valueKey="value"
                     placeholder="Category Type"
                     value={category}
-                    searchable={false}
+                    searchable={true}
                     onChange={handleCategory}
                   />
                 </Col>
@@ -201,12 +203,12 @@ export default function Category() {
                 <StyledHeadCell>Id</StyledHeadCell>
                 <StyledHeadCell>Image</StyledHeadCell>
                 <StyledHeadCell>Name</StyledHeadCell>
-                <StyledHeadCell>Slug</StyledHeadCell>
-                <StyledHeadCell>Type</StyledHeadCell>
+                <StyledHeadCell>Products</StyledHeadCell>
+                <StyledHeadCell>Last Update</StyledHeadCell>
 
                 {data ? (
-                  data.categories.length ? (
-                    data.categories
+                  data.allCategory.length ? (
+                    data.allCategory
                       .map((item) => Object.values(item))
                       .map((row, index) => (
                         <React.Fragment key={index}>
@@ -231,15 +233,15 @@ export default function Category() {
                               }}
                             />
                           </StyledCell>
-                          <StyledCell>{row[1]}</StyledCell>
+                          <StyledCell>{index+1}</StyledCell>
                           <StyledCell>
                             <ImageWrapper>
-                              <Icon name={row[2]} />
+                              {/* <Icon name={row[2]} /> */}
                             </ImageWrapper>
                           </StyledCell>
                           <StyledCell>{row[3]}</StyledCell>
                           <StyledCell>{row[4]}</StyledCell>
-                          <StyledCell>{row[5]}</StyledCell>
+                          <StyledCell>{row[5].slice(0,10)}</StyledCell>
                         </React.Fragment>
                       ))
                   ) : (
