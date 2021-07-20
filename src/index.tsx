@@ -8,6 +8,7 @@ import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import { theme } from './theme';
 import Routes from './routes';
 import * as serviceWorker from './serviceWorker';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './theme/global.css';
 
 const client = new ApolloClient({
