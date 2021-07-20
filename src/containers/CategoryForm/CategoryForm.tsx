@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { v4 as uuidv4 } from 'uuid';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation, gql, useQuery } from '@apollo/client';
+import { FormBuilder } from '@ginkgo-bioworks/react-json-schema-form-builder';
 import { useDrawerDispatch } from 'context/DrawerContext';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Uploader from 'components/Uploader/Uploader';
@@ -20,26 +20,24 @@ import {
 import { FormFields, FormLabel } from 'components/FormFields/FormFields';
 
 const GET_CATEGORIES = gql`
-  query getCategories($type: String, $searchBy: String) {
-    categories(type: $type, searchBy: $searchBy) {
-      id
-      icon
-      name
-      slug
-      type
-    }
+query{
+  allCategory{
+    _id
+    image,
+    name,
+    products,
+    updatedAt
   }
+}
 `;
 const CREATE_CATEGORY = gql`
-  mutation createCategory($category: AddCategoryInput!) {
-    createCategory(category: $category) {
-      id
-      name
-      type
-      icon
-      # creation_date
-      slug
-      # number_of_product
+  mutation createCategory($category: CreateCategoryInput!) {
+    createCategory(createCategoryInput: $category) {
+      _id
+      image,
+      name,
+      products,
+      updatedAt
     }
   }
 `;
@@ -58,47 +56,49 @@ const AddCategory: React.FC<Props> = (props) => {
     dispatch,
   ]);
   const { register, handleSubmit, setValue } = useForm();
-  const [category, setCategory] = useState([]);
+  const [category, setCategory] = useState('');
   React.useEffect(() => {
     register({ name: 'parent' });
     register({ name: 'image' });
   }, [register]);
-  const [createCategory] = useMutation(CREATE_CATEGORY, {
-    update(cache, { data: { createCategory } }) {
-      const { categories } = cache.readQuery({
-        query: GET_CATEGORIES,
-      });
+  const [createCategory] = useMutation(CREATE_CATEGORY,
+    {
+      update(cache, { data: { createCategory } }) {
+        const { allCategory } = cache.readQuery({
+          query: GET_CATEGORIES,
+        });
+        cache.writeQuery({
+          query: GET_CATEGORIES,
+          data: { allCategory: allCategory.concat([createCategory]) },
+        });
+      },
 
-      cache.writeQuery({
-        query: GET_CATEGORIES,
-        data: { categories: categories.concat([createCategory]) },
-      });
-    },
-  });
+    }
+  );
 
-  const onSubmit = ({ name, slug, parent, image }) => {
+  const onSubmit = ({ name, path, parent, image }) => {
     const newCategory = {
-      id: uuidv4(),
       name: name,
-      type: parent[0].value,
-      slug: slug,
-      icon: image,
-      creation_date: new Date(),
+      parentId: parent ? parent : null,
+      path: path === '' ? '/' + name : path,
+      image: image ? image : 'no-image',
+      products: 0
     };
     createCategory({
       variables: { category: newCategory },
     });
     closeDrawer();
-    console.log(newCategory, 'newCategory');
   };
   const handleChange = ({ value }) => {
     setValue('parent', value);
     setCategory(value);
   };
   const handleUploader = (files) => {
-    setValue('image', files[0].path);
+    setValue('image', files[0].path ? files[0].path : 'no-image');
   };
-
+  const [schema, setSchema] = React.useState('{}');
+  const [uischema, setUiSchema] = React.useState('{}');
+  console.log(schema)
   return (
     <>
       <DrawerTitleWrapper>
@@ -164,10 +164,10 @@ const AddCategory: React.FC<Props> = (props) => {
                 </FormFields>
 
                 <FormFields>
-                  <FormLabel>Slug</FormLabel>
+                  <FormLabel>Path</FormLabel>
                   <Input
                     inputRef={register({ pattern: /^[A-Za-z]+$/i })}
-                    name="slug"
+                    name="path"
                   />
                 </FormFields>
 
@@ -228,6 +228,25 @@ const AddCategory: React.FC<Props> = (props) => {
                     }}
                   />
                 </FormFields>
+              </DrawerBox>
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={4}>
+              <FieldDetails>
+                Add template Details
+              </FieldDetails>
+            </Col>
+            <Col lg={12}>
+              <DrawerBox>
+                <FormBuilder
+                  schema={schema}
+                  uischema={uischema}
+                  onChange={(newSchema: string, newUiSchema: string) => {
+                    setSchema(newSchema);
+                    setUiSchema(newUiSchema)
+                  }}
+                />
               </DrawerBox>
             </Col>
           </Row>
