@@ -42,6 +42,14 @@ const CREATE_CATEGORY = gql`
   }
 `;
 
+const CREATE_TEMPLATE = gql`
+  mutation createTemplate($template: CreateTemplateInput!) {
+    createTemplate(creatTemplateInput: $template) {
+      name,
+    }
+  }
+`
+
 const options = [
   { value: 'grocery', name: 'Grocery', id: '1' },
   { value: 'women-cloths', name: 'Women Cloths', id: '2' },
@@ -57,10 +65,19 @@ const AddCategory: React.FC<Props> = (props) => {
   ]);
   const { register, handleSubmit, setValue } = useForm();
   const [category, setCategory] = useState('');
+  const [schema, setSchema] = React.useState('{}');
+  const [uischema, setUiSchema] = React.useState('{}');
   React.useEffect(() => {
     register({ name: 'parent' });
     register({ name: 'image' });
   }, [register]);
+  const [createNewTemplate] = useMutation(CREATE_TEMPLATE,
+    {
+      onError(error) {
+        console.log(error)
+
+      }
+    })
   const [createCategory] = useMutation(CREATE_CATEGORY,
     {
       update(cache, { data: { createCategory } }) {
@@ -72,7 +89,20 @@ const AddCategory: React.FC<Props> = (props) => {
           data: { allCategory: allCategory.concat([createCategory]) },
         });
       },
-
+      onCompleted(data) {
+        const newTemplate = {
+          category_id: data.createCategory._id,
+          name: data.createCategory.name + '-Template',
+          formSchema: JSON.stringify(schema),
+        }
+        console.log(newTemplate);
+        createNewTemplate({
+          variables: { template: newTemplate },
+        })
+      },
+      onError(error){
+        console.log(error)
+      }
     }
   );
 
@@ -96,9 +126,7 @@ const AddCategory: React.FC<Props> = (props) => {
   const handleUploader = (files) => {
     setValue('image', files[0].path ? files[0].path : 'no-image');
   };
-  const [schema, setSchema] = React.useState('{}');
-  const [uischema, setUiSchema] = React.useState('{}');
-  console.log(schema)
+
   return (
     <>
       <DrawerTitleWrapper>

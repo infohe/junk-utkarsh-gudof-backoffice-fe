@@ -67,7 +67,6 @@ export default function Category() {
   );
 
   const { data, error, refetch } = useQuery(GET_CATEGORIES);
-  console.log(data)
   if (error) {
     return <div>Error! {error.message}</div>;
   }
