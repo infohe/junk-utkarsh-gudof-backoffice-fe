@@ -25,7 +25,7 @@ import {
   CloseButton,
   DrawerWrapper,
 } from './Topbar.style';
-import Logoimage from 'assets/image/PickBazar.png';
+import Logoimage from 'assets/image/gudof.png';
 import UserImage from 'assets/image/user.jpg';
 import { useDrawerDispatch } from 'context/DrawerContext';
 import Drawer, { ANCHOR } from 'components/Drawer/Drawer';
@@ -51,7 +51,7 @@ const Topbar = ({ refs }: any) => {
     <TopbarWrapper ref={refs}>
       <Logo>
         <Link to="/">
-          <LogoImage src={Logoimage} alt="pickbazar-admin" />
+          <LogoImage src={Logoimage} alt="gudof-admin" />
         </Link>
       </Logo>
 
