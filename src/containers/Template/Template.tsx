@@ -19,17 +19,17 @@ import {
 import { Plus } from 'assets/icons/Plus';
 import * as icons from 'assets/icons/category-icons';
 import NoResult from 'components/NoResult/NoResult';
+import {useTemplateDispatch} from './TemplateContext'
 
-const GET_CATEGORIES = gql`
-  query getCategories($type: String, $searchBy: String) {
-    categories(type: $type, searchBy: $searchBy) {
-      id
-      icon
-      name
-      slug
-      type
+const GET_TEMPLATE = gql`
+    query   {
+        allTemplate{
+            _id,
+            name,
+            category_id,
+            formSchema
+        }
     }
-  }
 `;
 
 const Col = withStyle(Column, () => ({
@@ -59,14 +59,11 @@ export default function Category() {
     const [category, setCategory] = useState([]);
     const [search, setSearch] = useState('');
     const dispatch = useDrawerDispatch();
+    const templateDispatch=useTemplateDispatch()
     const [checkedId, setCheckedId] = useState([]);
     const [checked, setChecked] = useState(false);
-    const openDrawer = useCallback(
-        () => dispatch({ type: 'OPEN_DRAWER', drawerComponent: 'EDIT_TEMPLATE' }),
-        [dispatch]
-    );
 
-    const { data, error, refetch } = useQuery(GET_CATEGORIES);
+    const { data, error, refetch } = useQuery(GET_TEMPLATE);
     if (error) {
         return <div>Error! {error.message}</div>;
     }
@@ -165,104 +162,73 @@ export default function Category() {
                                 <StyledHeadCell>Id</StyledHeadCell>
                                 <StyledHeadCell>image</StyledHeadCell>
                                 <StyledHeadCell>Name</StyledHeadCell>
-                                <StyledHeadCell>Type</StyledHeadCell>
+                                <StyledHeadCell>Parent</StyledHeadCell>
                                 <StyledHeadCell>Updated At</StyledHeadCell>
-                                <React.Fragment >
-                                    <StyledCell>
-                                        <Checkbox
-                                            name={'template'}
-                                            checked={checkedId.includes('template')}
-                                            onChange={handleCheckbox}
-                                            overrides={{
-                                                Checkmark: {
-                                                    style: {
-                                                        borderTopWidth: '2px',
-                                                        borderRightWidth: '2px',
-                                                        borderBottomWidth: '2px',
-                                                        borderLeftWidth: '2px',
-                                                        borderTopLeftRadius: '4px',
-                                                        borderTopRightRadius: '4px',
-                                                        borderBottomRightRadius: '4px',
-                                                        borderBottomLeftRadius: '4px',
-                                                    },
-                                                },
+                                {data ? (
+                                    data.allTemplate.length ? (
+                                        data.allTemplate
+                                            .map((item) => Object.values(item))
+                                            .map((row, index) => (
+                                                <React.Fragment key={index+1}>
+                                                    <StyledCell>
+                                                        <Checkbox
+                                                            name={row[1]}
+                                                            checked={checkedId.includes(row[1])}
+                                                            onChange={handleCheckbox}
+                                                            overrides={{
+                                                                Checkmark: {
+                                                                    style: {
+                                                                        borderTopWidth: '2px',
+                                                                        borderRightWidth: '2px',
+                                                                        borderBottomWidth: '2px',
+                                                                        borderLeftWidth: '2px',
+                                                                        borderTopLeftRadius: '4px',
+                                                                        borderTopRightRadius: '4px',
+                                                                        borderBottomRightRadius: '4px',
+                                                                        borderBottomLeftRadius: '4px',
+                                                                    },
+                                                                },
+                                                            }}
+                                                        />
+                                                    </StyledCell>
+                                                    <StyledCell>{index+1}</StyledCell>
+                                                    <StyledCell>
+                                                        <ImageWrapper>
+                                                        </ImageWrapper>
+                                                    </StyledCell>
+                                                    <StyledCell>
+                                                    <Button
+                                                            kind={KIND.minimal}
+                                                            onClick={()=>{
+                                                                templateDispatch({ type: 'TEMPLATE_DETAILS', payload:row})
+                                                                dispatch({ type: 'OPEN_DRAWER', drawerComponent: 'EDIT_TEMPLATE' })
+                                                            }}
+                                                            overrides={{
+                                                                BaseButton: {
+                                                                    style: () => ({
+                                                                    }),
+                                                                },
+                                                            }}
+                                                        >
+                                                            {row[2]}
+                                                        </Button>
+                                                    </StyledCell>
+                                                    <StyledCell>
+                                                        {row[1]}
+                                                    </StyledCell>
+                                                    <StyledCell>{row[5]}</StyledCell>
+                                                </React.Fragment>
+                                            ))
+                                    ) : (
+                                        <NoResult
+                                            hideButton={false}
+                                            style={{
+                                                gridColumnStart: '1',
+                                                gridColumnEnd: 'one',
                                             }}
                                         />
-                                    </StyledCell>
-                                    <StyledCell>{'template'}</StyledCell>
-                                    <StyledCell>
-                                        <StyledCell>{ }</StyledCell>
-                                    </StyledCell>
-                                    <StyledCell>
-                                    <Button
-                                        kind={KIND.minimal}
-                                        onClick={openDrawer}
-                                        overrides={{
-                                            BaseButton: {
-                                                style: () => ({
-                                                }),
-                                            },
-                                        }}
-                                    >
-                                        {'TemplateName'}
-                                    </Button>
-                                    </StyledCell>
-                                    <StyledCell>{'col2'}</StyledCell>
-                                    <StyledCell>
-                                        {'someDate'}
-                                    </StyledCell>
-                                </React.Fragment>
-
-
-
-                                {/* {data ? (
-                  data.categories.length ? (
-                    data.categories
-                      .map((item) => Object.values(item))
-                      .map((row, index) => (
-                        <React.Fragment key={index}>
-                          <StyledCell>
-                            <Checkbox
-                              name={row[1]}
-                              checked={checkedId.includes(row[1])}
-                              onChange={handleCheckbox}
-                              overrides={{
-                                Checkmark: {
-                                  style: {
-                                    borderTopWidth: '2px',
-                                    borderRightWidth: '2px',
-                                    borderBottomWidth: '2px',
-                                    borderLeftWidth: '2px',
-                                    borderTopLeftRadius: '4px',
-                                    borderTopRightRadius: '4px',
-                                    borderBottomRightRadius: '4px',
-                                    borderBottomLeftRadius: '4px',
-                                  },
-                                },
-                              }}
-                            />
-                          </StyledCell>
-                          <StyledCell>{row[1]}</StyledCell>
-                          <StyledCell>
-                            <ImageWrapper>
-                              <Icon name={row[2]} />
-                            </ImageWrapper>
-                          </StyledCell>
-                          <StyledCell>{row[3]}</StyledCell>
-                          <StyledCell>{row[4]}</StyledCell>
-                          <StyledCell>{row[5]}</StyledCell>
-                        </React.Fragment>
-                      ))
-                  ) : (
-                    <NoResult
-                      hideButton={false}
-                      style={{
-                        gridColumnStart: '1',
-                        gridColumnEnd: 'one',
-                      }}
-                    />
-                  )
-                ) : null} */}
+                                    )
+                                ) : null}
                             </StyledTable>
                         </TableWrapper>
                     </Wrapper>

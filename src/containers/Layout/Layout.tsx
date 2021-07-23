@@ -4,6 +4,7 @@ import Sidebar from './Sidebar/Sidebar';
 import Topbar from './Topbar/Topbar';
 import DrawerItems from '../DrawerItems/DrawerItems';
 import { DrawerProvider } from 'context/DrawerContext';
+import {TemplateProvider} from 'containers/Template/TemplateContext'
 import {
   LayoutWrapper,
   ContentWrapper,
@@ -25,6 +26,7 @@ const AdminLayout = ({ children }: any) => {
 
   return (
     <DrawerProvider>
+      <TemplateProvider>
       <Topbar refs={topbarRef} />
       <LayoutWrapper
         style={{
@@ -60,6 +62,7 @@ const AdminLayout = ({ children }: any) => {
         )}
       </LayoutWrapper>
       <DrawerItems />
+      </TemplateProvider>
     </DrawerProvider>
   );
 };

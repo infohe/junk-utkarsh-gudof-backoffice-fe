@@ -19,6 +19,7 @@ import {
   ButtonGroup,
 } from '../DrawerItems/DrawerItems.style';
 import { FormFields, FormLabel } from 'components/FormFields/FormFields';
+import {useTemplateState} from './TemplateContext'
 
 const GET_CATEGORIES = gql`
   query getCategories($type: String, $searchBy: String) {
@@ -58,7 +59,11 @@ const AddCategory: React.FC<Props> = (props) => {
   const closeDrawer = useCallback(() => dispatch({ type: 'CLOSE_DRAWER' }), [
     dispatch,
   ]);
+  const formSchema=JSON.parse(useTemplateState('formSchema'))
+  console.log(formSchema)
   const { register, handleSubmit, setValue } = useForm();
+  const [schema, setSchema] = React.useState(formSchema);
+  const [uischema, setUiSchema] = React.useState('{}');
   const [category, setCategory] = useState([]);
   React.useEffect(() => {
     register({ name: 'parent' });
@@ -99,12 +104,11 @@ const AddCategory: React.FC<Props> = (props) => {
   const handleUploader = (files) => {
     setValue('image', files[0].path);
   };
-  const [schema, setSchema] = React.useState('{}');
-  const [uischema, setUiSchema] = React.useState('{}');
+ 
   return (
     <>
       <DrawerTitleWrapper>
-        <DrawerTitle>Add Category</DrawerTitle>
+        <DrawerTitle>Edit Template</DrawerTitle>
       </DrawerTitleWrapper>
 
       <Form onSubmit={handleSubmit(onSubmit)} style={{ height: '100%' }}>
