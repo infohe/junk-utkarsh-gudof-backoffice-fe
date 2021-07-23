@@ -45,10 +45,23 @@ const CREATE_CATEGORY = gql`
 const CREATE_TEMPLATE = gql`
   mutation createTemplate($template: CreateTemplateInput!) {
     createTemplate(creatTemplateInput: $template) {
+      _id,
       name,
+      category_id,
+      formSchema
     }
   }
 `
+const GET_TEMPLATE = gql`
+    query   {
+        allTemplate{
+            _id,
+            name,
+            category_id,
+            formSchema
+        }
+    }
+`;
 
 const options = [
   { value: 'grocery', name: 'Grocery', id: '1' },
@@ -73,6 +86,16 @@ const AddCategory: React.FC<Props> = (props) => {
   }, [register]);
   const [createNewTemplate] = useMutation(CREATE_TEMPLATE,
     {
+      update(cache, { data: { createNewTemplate } }) {
+        const { allTemplate } = cache.readQuery({
+          query: GET_TEMPLATE,
+        });
+        cache.writeQuery({
+          query: GET_CATEGORIES,
+          data: { allTemplate: allTemplate.concat([createNewTemplate]) },
+        });
+
+      },
       onError(error) {
         console.log(error)
 
@@ -100,7 +123,7 @@ const AddCategory: React.FC<Props> = (props) => {
           variables: { template: newTemplate },
         })
       },
-      onError(error){
+      onError(error) {
         console.log(error)
       }
     }
