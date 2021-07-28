@@ -32,10 +32,11 @@ export const FieldDetails = styled("span", ({ $theme }) => ({
 }));
 
 export const ButtonGroup = styled("div", ({ $theme }) => ({
-  padding: "30px 60px",
+  // padding: "30px 60px",
   display: "flex",
   alignItems: "center",
   position: "fixed",
+  marginTop:"10%",
   bottom: "0",
   right: "0",
   width: "100%",
@@ -43,6 +44,6 @@ export const ButtonGroup = styled("div", ({ $theme }) => ({
   boxShadow: "0 0 3px rgba(0, 0, 0, 0.1)",
 
   "@media only screen and (max-width: 767px)": {
-    padding: "20px 30px"
+    padding: "10px 20px"  
   }
 }));
