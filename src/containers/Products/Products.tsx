@@ -61,33 +61,25 @@ export const LoaderItem = styled('div', () => ({
 }));
 
 const GET_PRODUCTS = gql`
-  query getProducts(
-    $type: String
-    $sortByPrice: String
-    $searchText: String
-    $offset: Int
-  ) {
-    products(
-      type: $type
-      sortByPrice: $sortByPrice
-      searchText: $searchText
-      offset: $offset
-    ) {
-      items {
-        id
-        name
-        description
-        image
-        type
-        price
-        unit
-        salePrice
-        discountInPercent
-      }
-      totalCount
-      hasMore
+ query{
+  allProducts{
+     _id,
+    name,
+    published,
+    data,
+    category{
+      _id,
+      name
+    },
+    template{
+      _id,
+      name,
+      formSchema,
+      uiSchema
     }
+    deleted
   }
+}
 `;
 
 const typeSelectOptions = [
@@ -209,8 +201,8 @@ export default function Products() {
 
           <Row>
             {data ? (
-              data.products && data.products.items.length !== 0 ? (
-                data.products.items.map((item: any, index: number) => (
+              data.allProducts && data.allProducts.length !== 0 ? (
+                data.allProducts.map((item: any, index: number) => (
                   <Col
                     md={4}
                     lg={3}
@@ -222,8 +214,8 @@ export default function Products() {
                     <Fade bottom duration={800} delay={index * 10}>
                       <ProductCard
                         title={item.name}
-                        weight={item.unit}
-                        image={item.image}
+                        category={item.category.name}
+                        image={item.image?item.image : img }
                         currency={CURRENCY}
                         price={item.price}
                         salePrice={item.salePrice}
@@ -270,3 +262,6 @@ export default function Products() {
     </Grid>
   );
 }
+
+
+const img='https://en.wikipedia.org/wiki/Resistor#/media/File:Electronic-Axial-Lead-Resistors-Array.jpg'
