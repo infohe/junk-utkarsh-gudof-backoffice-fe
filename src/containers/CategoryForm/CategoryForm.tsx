@@ -48,7 +48,8 @@ const CREATE_TEMPLATE = gql`
       _id,
       name,
       category_id,
-      formSchema
+      formSchema,
+      uiSchema
     }
   }
 `
@@ -58,7 +59,8 @@ const GET_TEMPLATE = gql`
             _id,
             name,
             category_id,
-            formSchema
+            formSchema,
+            uiSchema
         }
     }
 `;
@@ -117,6 +119,7 @@ const AddCategory: React.FC<Props> = (props) => {
           category_id: data.createCategory._id,
           name: data.createCategory.name + '-Template',
           formSchema: JSON.stringify(schema),
+          uiSchema: JSON.stringify(uischema)
         }
         console.log(newTemplate);
         createNewTemplate({
