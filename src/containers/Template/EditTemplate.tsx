@@ -20,6 +20,7 @@ const UPDATE_FORMSCHEMA = gql`
       name,
       category_id,
       formSchema
+      uiSchema
     }
   }
 `
@@ -30,6 +31,7 @@ const GET_TEMPLATE = gql`
             name,
             category_id,
             formSchema
+            uiSchema
         }
     }
 `;
@@ -41,20 +43,21 @@ const AddCategory: React.FC<Props> = (props) => {
   const closeDrawer = useCallback(() => dispatch({ type: 'CLOSE_DRAWER' }), [
     dispatch,
   ]);
-  const formSchema = JSON.parse(useTemplateState('formSchema'))
+  const formSchema = useTemplateState('formSchema')
   const templateId = useTemplateState('_id')
+  const uiSchema= useTemplateState('uiSchema')
   const [schema, setSchema] = useState(formSchema);
-  const [uischema, setUiSchema] = useState('{}');
+  const [uischema, setUiSchema] = useState(uiSchema);
   const [updateTemplate] = useMutation(UPDATE_FORMSCHEMA,{
     onCompleted(data){
     },
     onError(error){
+      console.log(error)
     }
   })
   const onSubmit = () => {
-    console.log('submitted')
     updateTemplate({
-      variables: { template: { _id:templateId, formSchema: JSON.stringify(schema) } },
+      variables: { template: { _id:templateId, formSchema:schema,uiSchema:uischema } },
       refetchQueries: [{ query: GET_TEMPLATE }]
     })
     closeDrawer()
@@ -95,7 +98,7 @@ const AddCategory: React.FC<Props> = (props) => {
           </Col>
         </Row>
       </Scrollbars>
-      <ButtonGroup>
+      <ButtonGroup >
         <Button
           kind={KIND.minimal}
           onClick={closeDrawer}
@@ -121,7 +124,7 @@ const AddCategory: React.FC<Props> = (props) => {
           overrides={{
             BaseButton: {
               style: ({ $theme }) => ({
-                width: '50%',
+                width: '25%',
                 borderTopLeftRadius: '3px',
                 borderTopRightRadius: '3px',
                 borderBottomRightRadius: '3px',

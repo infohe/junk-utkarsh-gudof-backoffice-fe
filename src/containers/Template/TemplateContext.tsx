@@ -4,7 +4,8 @@ const initialState = {
   _id:null,
   name:null,
   formSchema:null,
-  category_id:null
+  category_id:null,
+  uiSchema:null
 };
 type State = typeof initialState;
 type Action = any;
@@ -17,7 +18,8 @@ function reducer(state: State, action: Action) {
           _id:payload[1],
           name:payload[2],
           category_id:payload[3],
-          formSchema:payload[4]
+          formSchema:payload[4],
+          uiSchema:payload[5]
         }
     default:
         return state;
