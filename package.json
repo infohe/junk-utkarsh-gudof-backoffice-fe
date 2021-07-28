@@ -5,6 +5,7 @@
   "dependencies": {
     "@apollo/client": "^3.3.15",
     "@ginkgo-bioworks/react-json-schema-form-builder": "^2.5.0",
+    "@rjsf/core": "^3.0.0",
     "apexcharts": "3.26.0",
     "baseui": "^9.112.0",
     "bootstrap": "^4.6.0",
