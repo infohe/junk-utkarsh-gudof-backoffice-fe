@@ -26,7 +26,7 @@ import {
   DrawerWrapper,
 } from './Topbar.style';
 import Logoimage from 'assets/image/gudof.png';
-import UserImage from 'assets/image/user.jpg';
+import UserImage from 'assets/image/user.png';
 import { useDrawerDispatch } from 'context/DrawerContext';
 import Drawer, { ANCHOR } from 'components/Drawer/Drawer';
 import Sidebar from '../Sidebar/Sidebar';

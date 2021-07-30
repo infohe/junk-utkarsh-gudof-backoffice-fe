@@ -22,12 +22,13 @@ import NoResult from 'components/NoResult/NoResult';
 import {useTemplateDispatch} from './TemplateContext'
 
 const GET_TEMPLATE = gql`
-    query   {
+    query  {
         allTemplate{
             _id,
             name,
             category_id,
-            formSchema
+            formSchema,
+            uiSchema
         }
     }
 `;
@@ -216,7 +217,7 @@ export default function Category() {
                                                     <StyledCell>
                                                         {row[1]}
                                                     </StyledCell>
-                                                    <StyledCell>{row[5]}</StyledCell>
+                                                    <StyledCell>{}</StyledCell>
                                                 </React.Fragment>
                                             ))
                                     ) : (

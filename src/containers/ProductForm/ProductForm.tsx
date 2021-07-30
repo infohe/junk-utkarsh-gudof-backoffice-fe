@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { v4 as uuidv4 } from 'uuid';
 import { useMutation, gql, useQuery } from '@apollo/client';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Form from "@rjsf/core";
@@ -160,10 +159,10 @@ const AddProduct: React.FC<Props> = (props) => {
               <Select
                 options={typeOptions}
                 labelKey="name"
-                valueKey="value"
+                valueKey="name"
                 placeholder="Template Type"
                 value={type}
-                searchable={false}
+                searchable={true}
                 onChange={handleTypeChange}
                 overrides={{
                   Placeholder: {
