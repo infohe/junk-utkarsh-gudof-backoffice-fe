@@ -92,8 +92,9 @@ const AddCategory: React.FC<Props> = (props) => {
         const { allTemplate } = cache.readQuery({
           query: GET_TEMPLATE,
         });
+        console.log(allTemplate)
         cache.writeQuery({
-          query: GET_CATEGORIES,
+          query: GET_TEMPLATE,
           data: { allTemplate: allTemplate.concat([createNewTemplate]) },
         });
 
@@ -118,8 +119,8 @@ const AddCategory: React.FC<Props> = (props) => {
         const newTemplate = {
           category_id: data.createCategory._id,
           name: data.createCategory.name + '-Template',
-          formSchema: JSON.stringify(schema),
-          uiSchema: JSON.stringify(uischema)
+          formSchema:schema,
+          uiSchema: uischema
         }
         console.log(newTemplate);
         createNewTemplate({
