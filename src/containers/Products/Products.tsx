@@ -264,4 +264,4 @@ export default function Products() {
 }
 
 
-const img='https://en.wikipedia.org/wiki/Resistor#/media/File:Electronic-Axial-Lead-Resistors-Array.jpg'
+const img='https://gudofbucket.s3.au-syd.cloud-object-storage.appdomain.cloud/Electronic-Axial-Lead-Resistors-Array.jpg'
