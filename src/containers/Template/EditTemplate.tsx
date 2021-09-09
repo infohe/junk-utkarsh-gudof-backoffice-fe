@@ -45,20 +45,19 @@ const AddCategory: React.FC<Props> = (props) => {
   ]);
   const formSchema = useTemplateState('formSchema')
   const templateId = useTemplateState('_id')
-  const uiSchema= useTemplateState('uiSchema')
+  const uiSchema = useTemplateState('uiSchema')
   const [schema, setSchema] = useState(formSchema);
   const [uischema, setUiSchema] = useState(uiSchema);
-  const [updateTemplate] = useMutation(UPDATE_FORMSCHEMA,{
-    onCompleted(data){
+  const [updateTemplate] = useMutation(UPDATE_FORMSCHEMA, {
+    onCompleted(data) {
     },
-    onError(error){
+    onError(error) {
       console.log(error)
     }
   })
   const onSubmit = () => {
     updateTemplate({
-      variables: { template: { _id:templateId, formSchema:schema,uiSchema:uischema } },
-      refetchQueries: [{ query: GET_TEMPLATE }]
+      variables: { template: { _id: templateId, formSchema: schema, uiSchema: uischema } },
     })
     closeDrawer()
   };

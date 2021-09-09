@@ -25,6 +25,8 @@ function reducer(state: State, action: Action) {
         return state;
   }
 }
+
+
 const [useTemplateState, useTemplateDispatch, TemplateProvider] = createCtx(
   initialState,
   reducer

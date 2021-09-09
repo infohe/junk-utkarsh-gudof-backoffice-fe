@@ -15,7 +15,6 @@ import {
   FieldDetails,
   ButtonGroup,
 } from '../DrawerItems/DrawerItems.style';
-import { removeFragmentSpreadFromDocument } from '@apollo/client/utilities';
 
 const GET_TEMPLATE_NAMES = gql`
   query{
@@ -93,16 +92,20 @@ const AddProduct: React.FC<Props> = (props) => {
       setTypeOptions([...data.allTemplate])
     }
   }, [data, register, type]);
-  const [createProduct] = useMutation(CREATE_PRODUCT,{
+  const [createProduct] = useMutation(CREATE_PRODUCT, {
     update(cache, { data: { createProduct } }) {
       const { allProducts } = cache.readQuery({
         query: GET_PRODUCTS,
       });
+      console.log(allProducts)
       cache.writeQuery({
         query: GET_PRODUCTS,
         data: { allProducts: allProducts.concat([createProduct]) },
       })
     },
+    onError(error) {
+      console.log(error)
+    }
   });
   const handleTypeChange = ({ value }) => {
     setValue('type', value);
@@ -116,14 +119,13 @@ const AddProduct: React.FC<Props> = (props) => {
 
   const onSubmit = () => {
     const newProduct = {
-      name:formData['name'],
-      category:type[0].category_id,
-      data:JSON.stringify(formData),
-      mainCategory:type[0].category_id,
-      published:true,
-      template:type[0]._id
+      name: formData['name'],
+      category: type[0].category_id,
+      data: JSON.stringify(formData),
+      mainCategory: type[0].category_id,
+      published: true,
+      template: type[0]._id
     };
-    console.log(newProduct)
     createProduct({
       variables: { product: newProduct },
     });
@@ -227,8 +229,8 @@ const AddProduct: React.FC<Props> = (props) => {
               schema={formSchema}
               uiSchema={uischema}
               formData={formData}
-              onChange={(newFormData)=>{setFormData(newFormData.formData)}}
-              >
+              onChange={(newFormData) => { setFormData(newFormData.formData) }}
+            >
             </Form>
           </Col>
         </Row>
