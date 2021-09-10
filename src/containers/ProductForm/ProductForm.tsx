@@ -27,9 +27,6 @@ const GET_TEMPLATE_NAMES = gql`
     }
 }
 `
-
-
-
 const GET_PRODUCTS = gql`
 query{
   allProducts{

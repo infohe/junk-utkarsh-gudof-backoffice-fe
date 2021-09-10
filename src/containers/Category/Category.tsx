@@ -25,6 +25,7 @@ query{
     _id
     image,
     name,
+    path,
     products,
     updatedAt
   }
@@ -239,8 +240,8 @@ export default function Category() {
                             </ImageWrapper>
                           </StyledCell>
                           <StyledCell>{row[3]}</StyledCell>
-                          <StyledCell>{row[4]}</StyledCell>
-                          <StyledCell>{row[5].slice(0,10)}</StyledCell>
+                          <StyledCell>{row[5]}</StyledCell>
+                          <StyledCell>{row[6].slice(0,10)}</StyledCell>
                         </React.Fragment>
                       ))
                   ) : (

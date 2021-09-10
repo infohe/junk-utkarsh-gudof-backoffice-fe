@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, gql, useQuery } from '@apollo/client';
-import { FormBuilder } from '@ginkgo-bioworks/react-json-schema-form-builder';
 import { useDrawerDispatch } from 'context/DrawerContext';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Uploader from 'components/Uploader/Uploader';
@@ -25,6 +24,7 @@ query{
     _id
     image,
     name,
+    path,
     products,
     updatedAt
   }
@@ -36,6 +36,7 @@ const CREATE_CATEGORY = gql`
       _id
       image,
       name,
+      path,
       products,
       updatedAt
     }
@@ -65,12 +66,6 @@ const GET_TEMPLATE = gql`
     }
 `;
 
-const options = [
-  { value: 'grocery', name: 'Grocery', id: '1' },
-  { value: 'women-cloths', name: 'Women Cloths', id: '2' },
-  { value: 'bags', name: 'Bags', id: '3' },
-  { value: 'makeup', name: 'Makeup', id: '4' },
-];
 type Props = any;
 
 const AddCategory: React.FC<Props> = (props) => {
@@ -82,10 +77,13 @@ const AddCategory: React.FC<Props> = (props) => {
   const [category, setCategory] = useState('');
   const [schema, setSchema] = React.useState('{}');
   const [uischema, setUiSchema] = React.useState('{}');
+  const [options, setOptions] = React.useState({});
+  const { data, error, refetch } = useQuery(GET_CATEGORIES);
   React.useEffect(() => {
     register({ name: 'parent' });
     register({ name: 'image' });
-  }, [register]);
+    setOptions(data);
+  }, [register,data]);
   const [createNewTemplate] = useMutation(CREATE_TEMPLATE,
     {
       update(cache, { data: { createNewTemplate } }) {
@@ -115,18 +113,6 @@ const AddCategory: React.FC<Props> = (props) => {
           data: { allCategory: allCategory.concat([createCategory]) },
         });
       },
-      onCompleted(data) {
-        const newTemplate = {
-          category_id: data.createCategory._id,
-          name: data.createCategory.name + '-Template',
-          formSchema:schema,
-          uiSchema: uischema
-        }
-        console.log(newTemplate);
-        createNewTemplate({
-          variables: { template: newTemplate },
-        })
-      },
       onError(error) {
         console.log(error)
       }
@@ -136,17 +122,19 @@ const AddCategory: React.FC<Props> = (props) => {
   const onSubmit = ({ name, path, parent, image }) => {
     const newCategory = {
       name: name,
-      parentId: parent ? parent : null,
-      path: path === '' ? '/' + name : path,
+      parentId: parent[0]._id ? parent[0]._id : null,
+      path: path === '' ? parent[0].path+'/' + name : parent[0].path+'/'+path,
       image: image ? image : 'no-image',
       products: 0
     };
+    console.log(newCategory)
     createCategory({
       variables: { category: newCategory },
     });
     closeDrawer();
   };
   const handleChange = ({ value }) => {
+    console.log(value)
     setValue('parent', value);
     setCategory(value);
   };
@@ -219,19 +207,11 @@ const AddCategory: React.FC<Props> = (props) => {
                 </FormFields>
 
                 <FormFields>
-                  <FormLabel>Path</FormLabel>
-                  <Input
-                    inputRef={register({ pattern: /^[A-Za-z]+$/i })}
-                    name="path"
-                  />
-                </FormFields>
-
-                <FormFields>
                   <FormLabel>Parent</FormLabel>
                   <Select
                     options={options}
                     labelKey="name"
-                    valueKey="value"
+                    valueKey="_id"
                     placeholder="Ex: Choose parent category"
                     value={category}
                     searchable={false}
@@ -283,17 +263,24 @@ const AddCategory: React.FC<Props> = (props) => {
                     }}
                   />
                 </FormFields>
+                <FormFields>
+                  <FormLabel>Path</FormLabel>
+                  <Input
+                    inputRef={register({ pattern: /^[A-Za-z]+$/i })}
+                    name="path"
+                  />
+                </FormFields>
               </DrawerBox>
             </Col>
           </Row>
           <Row>
             <Col lg={4}>
-              <FieldDetails>
+              {/* <FieldDetails>
                 Add template Details
-              </FieldDetails>
+              </FieldDetails> */}
             </Col>
             <Col lg={12}>
-              <DrawerBox>
+              {/* <DrawerBox>
                 <FormBuilder
                   schema={schema}
                   uischema={uischema}
@@ -302,7 +289,7 @@ const AddCategory: React.FC<Props> = (props) => {
                     setUiSchema(newUiSchema)
                   }}
                 />
-              </DrawerBox>
+              </DrawerBox> */}
             </Col>
           </Row>
         </Scrollbars>
