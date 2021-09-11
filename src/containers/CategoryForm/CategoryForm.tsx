@@ -75,8 +75,6 @@ const AddCategory: React.FC<Props> = (props) => {
   ]);
   const { register, handleSubmit, setValue } = useForm();
   const [category, setCategory] = useState('');
-  const [schema, setSchema] = React.useState('{}');
-  const [uischema, setUiSchema] = React.useState('{}');
   const [options, setOptions] = React.useState({});
   const { data, error, refetch } = useQuery(GET_CATEGORIES);
   React.useEffect(() => {
@@ -84,24 +82,7 @@ const AddCategory: React.FC<Props> = (props) => {
     register({ name: 'image' });
     setOptions(data);
   }, [register,data]);
-  const [createNewTemplate] = useMutation(CREATE_TEMPLATE,
-    {
-      update(cache, { data: { createNewTemplate } }) {
-        const { allTemplate } = cache.readQuery({
-          query: GET_TEMPLATE,
-        });
-        console.log(allTemplate)
-        cache.writeQuery({
-          query: GET_TEMPLATE,
-          data: { allTemplate: allTemplate.concat([createNewTemplate]) },
-        });
-
-      },
-      onError(error) {
-        console.log(error)
-
-      }
-    })
+  
   const [createCategory] = useMutation(CREATE_CATEGORY,
     {
       update(cache, { data: { createCategory } }) {

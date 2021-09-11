@@ -5,7 +5,6 @@ import { Grid, Row as Rows, Col as Column } from 'components/FlexBox/FlexBox';
 import { useDrawerDispatch } from 'context/DrawerContext';
 import Select from 'components/Select/Select';
 import Input from 'components/Input/Input';
-// import Button from 'components/Button/Button';
 import Checkbox from 'components/CheckBox/CheckBox';
 import { useQuery, gql } from '@apollo/client';
 import { Wrapper, Header, Heading } from 'components/Wrapper.style';
@@ -19,7 +18,8 @@ import {
 import { Plus } from 'assets/icons/Plus';
 import * as icons from 'assets/icons/category-icons';
 import NoResult from 'components/NoResult/NoResult';
-import {useTemplateDispatch} from './TemplateContext'
+import { useTemplateDispatch } from './TemplateContext'
+import TemplateCreateDrawer from './TemplateCreateDrawer';
 
 const GET_TEMPLATE = gql`
     query  {
@@ -60,9 +60,10 @@ export default function Category() {
     const [category, setCategory] = useState([]);
     const [search, setSearch] = useState('');
     const dispatch = useDrawerDispatch();
-    const templateDispatch=useTemplateDispatch()
+    const templateDispatch = useTemplateDispatch()
     const [checkedId, setCheckedId] = useState([]);
     const [checked, setChecked] = useState(false);
+    const [open,setOpen]=useState(false)
 
     const { data, error, refetch } = useQuery(GET_TEMPLATE);
     if (error) {
@@ -121,20 +122,28 @@ export default function Category() {
                         <Col md={10}>
                             <Row>
                                 <Col md={3} lg={3}>
-                                    <Select
-                                        options={categorySelectOptions}
-                                        labelKey="label"
-                                        valueKey="value"
-                                        placeholder="Sort by"
-                                        value={category}
-                                        searchable={false}
-                                        onChange={handleCategory}
-                                    />
+                                    <Button
+                                        onClick={()=>setOpen(true)}
+                                        startEnhancer={() => <Plus />}
+                                        overrides={{
+                                            BaseButton: {
+                                                style: () => ({
+                                                    width: '100%',
+                                                    borderTopLeftRadius: '3px',
+                                                    borderTopRightRadius: '3px',
+                                                    borderBottomLeftRadius: '3px',
+                                                    borderBottomRightRadius: '3px',
+                                                }),
+                                            },
+                                        }}
+                                    >
+                                        Add Template
+                                    </Button>
                                 </Col>
                             </Row>
                         </Col>
                     </Header>
-
+                    <TemplateCreateDrawer state={open} setState={setOpen}/>
                     <Wrapper style={{ boxShadow: '0 0 5px rgba(0, 0 , 0, 0.05)' }}>
                         <TableWrapper>
                             <StyledTable $gridTemplateColumns="minmax(70px, 70px) minmax(70px, 70px) minmax(70px, 70px) minmax(150px, auto) minmax(150px, auto) auto">
@@ -170,7 +179,7 @@ export default function Category() {
                                         data.allTemplate
                                             .map((item) => Object.values(item))
                                             .map((row, index) => (
-                                                <React.Fragment key={index+1}>
+                                                <React.Fragment key={index + 1}>
                                                     <StyledCell>
                                                         <Checkbox
                                                             name={row[1]}
@@ -192,16 +201,16 @@ export default function Category() {
                                                             }}
                                                         />
                                                     </StyledCell>
-                                                    <StyledCell>{index+1}</StyledCell>
+                                                    <StyledCell>{index + 1}</StyledCell>
                                                     <StyledCell>
                                                         <ImageWrapper>
                                                         </ImageWrapper>
                                                     </StyledCell>
                                                     <StyledCell>
-                                                    <Button
+                                                        <Button
                                                             kind={KIND.minimal}
-                                                            onClick={()=>{
-                                                                templateDispatch({ type: 'TEMPLATE_DETAILS', payload:row})
+                                                            onClick={() => {
+                                                                templateDispatch({ type: 'TEMPLATE_DETAILS', payload: row })
                                                                 dispatch({ type: 'OPEN_DRAWER', drawerComponent: 'EDIT_TEMPLATE' })
                                                             }}
                                                             overrides={{
@@ -217,7 +226,7 @@ export default function Category() {
                                                     <StyledCell>
                                                         {row[1]}
                                                     </StyledCell>
-                                                    <StyledCell>{}</StyledCell>
+                                                    <StyledCell>{ }</StyledCell>
                                                 </React.Fragment>
                                             ))
                                     ) : (
